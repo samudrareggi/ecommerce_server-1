@@ -13,27 +13,27 @@ module.exports = {
     */
     const data = [
       {
-      email: "Shoes",
+      name: "Shoes",
       createdAt: new Date(),
       updatedAt: new Date(),
       },
       {
-      email: "Jackets",
+      name: "Jackets",
       createdAt: new Date(),
       updatedAt: new Date(),
       },
       {
-      email: "Electronics",
+      name: "Electronics",
       createdAt: new Date(),
       updatedAt: new Date(),
       },
       {
-      email: "Gadgets",
+      name: "Gadgets",
       createdAt: new Date(),
       updatedAt: new Date(),
       },
       {
-      email: "T-shirt",
+      name: "T-shirt",
       createdAt: new Date(),
       updatedAt: new Date(),
       }
