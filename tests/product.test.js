@@ -1,12 +1,21 @@
 const request = require('supertest');
 const app = require('../app');
-const { User } = require("../models")
+const { User, Category } = require("../models")
 const { comparePassword } = require("../helpers/bcryptjs")
 const { signToken } = require("../helpers/jwt")
 
 let result = {}
 
 beforeAll((done) => {
+  Category.create({ name: "Baju" })
+  .then(data => {
+    res.status(201).json({ name })
+    done()
+  })
+  .catch(err => {
+    done()
+  })
+
   User.findOne({
     where: {
       email: "admin@email.com"
@@ -14,9 +23,9 @@ beforeAll((done) => {
   })
     .then(data => {
       if (!data) {
-        throw { name: "ErrorLogin" }
+        throw { name: "Wrong Email/Password", status: '401' }
       } else if (!comparePassword("12345678", data.password)) {
-        throw { name: "ErrorLogin" }
+        throw { name: "Wrong Email/Password", status: '401' }
       } else {
         const access_token = signToken({
           id: data.id,
@@ -38,9 +47,9 @@ beforeAll((done) => {
     })
       .then(data => {
         if (!data) {
-          throw { name: "ErrorLogin" }
+          throw { name: "Wrong Email/Password", status: '401' }
         } else if (!comparePassword("12345678", data.password)) {
-          throw { name: "ErrorLogin" }
+          throw { name: "Wrong Email/Password", status: '401' }
         } else {
           const access_token = signToken({
             id: data.id,
@@ -60,7 +69,7 @@ describe("Test Endpoint POST /products", () => {
   it("Add product succes", (done) => {
     request(app)
     .post("/products")
-    .send({name: "tes", image_url: "http", price: 10000, stock: 10})
+    .send({name: "tes", image_url: "http", price: 10000, stock: 10, CategoryId: 1})
     .set("token", result.access_token)
     .then(response => {
       const {body, status} = response
@@ -69,6 +78,7 @@ describe("Test Endpoint POST /products", () => {
       expect(body).toHaveProperty("image_url")
       expect(body).toHaveProperty("price")
       expect(body).toHaveProperty("stock")
+      expect(body).toHaveProperty("CategoryId")
 
       done()
     })
@@ -216,8 +226,8 @@ describe("Test Endpoint POST /products", () => {
 describe("Test Endpoint PUT /product", () => {
   it("Update product succes", (done) => {
     request(app)
-    .put("/products/10")
-    .send({name: "tes", image_url: "http", price: 10000})
+    .put("/products/2")
+    .send({name: "tes", image_url: "http", price: 10000, stock: 10})
     .set("token", result.access_token)
     .then(response => {
       const {body, status} = response
@@ -225,7 +235,6 @@ describe("Test Endpoint PUT /product", () => {
       expect(body).toHaveProperty("name")
       expect(body).toHaveProperty("image_url")
       expect(body).toHaveProperty("price")
-
       done()
     })
     .catch(err => {
@@ -235,8 +244,8 @@ describe("Test Endpoint PUT /product", () => {
 
   it("Token is null", (done) => {
     request(app)
-    .put("/products/10")
-    .send({name: "tes",image_url: "http", price: 10000})
+    .put("/products/2")
+    .send({name: "tes",image_url: "http", price: 2000})
     .then(response => {
       const {body, status} = response
       expect(status).toBe(401)
@@ -251,7 +260,7 @@ describe("Test Endpoint PUT /product", () => {
 
   it("Role not admin", (done) => {
     request(app)
-    .patch("/products/10")
+    .patch("/products/2")
     .send({stock: 0})
     .set("token", result.access_token_customer)
     .then(response => {
@@ -266,27 +275,10 @@ describe("Test Endpoint PUT /product", () => {
     })
   })
 
-  it("Stock is less than 0", (done) => {
-    request(app)
-    .patch("/products/10")
-    .send({stock: -10})
-    .set("token", result.access_token)
-    .then(response => {
-      const {body, status} = response
-      expect(status).toBe(400)
-      expect(body).toHaveProperty("error", "Please set stock more than or equal 0")
-
-      done()
-    })
-    .catch(err => {
-      done.fail(err)
-    })
-  })
-
   it("Price is less than 1", (done) => {
     request(app)
-    .put("/products/10")
-    .send({name: "tes",image_url: "http", price: 0})
+    .put("/products/2")
+    .send({name: "tes",image_url: "http", price: 0, stock: 10})
     .set("token", result.access_token)
     .then(response => {
       const {body, status} = response
@@ -299,11 +291,10 @@ describe("Test Endpoint PUT /product", () => {
       done.fail(err)
     })
   })
-
   it("Stock is filled in a string", (done) => {
     request(app)
-    .patch("/products/10")
-    .send({stock: "tes"})
+    .put("/products/2")
+    .send({name: "tes",image_url: "http", price: 10, stock: "stockk"})
     .set("token", result.access_token)
     .then(response => {
       const {body, status} = response
@@ -321,7 +312,7 @@ describe("Test Endpoint PUT /product", () => {
 describe("Test Endpoint DELETE /product", () => {
   it("Delete product succes", (done) => {
     request(app)
-    .delete("/products/2")
+    .delete("/products/7")
     .set("token", result.access_token)
     .then(response => {
       const {body, status} = response

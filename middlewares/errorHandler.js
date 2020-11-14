@@ -18,9 +18,6 @@ module.exports = function (err, req, res, next) {
   } else if (err.name === "SequelizeUniqueConstraintError") {
     status = 400
     error = err.message
-  } else if (err.name === "ErrorLogin") {
-    status = 401
-    error = "Wrong Email/Password"
   } else if (err.status) {
     return res.status(err.status).json({ error: err.name })
   }
