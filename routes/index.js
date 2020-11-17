@@ -13,6 +13,7 @@ router.get("/", (req, res,) => {
 router.post("/register", UserController.register)
 router.get("/products", ProductController.getProduct)
 router.post("/login", UserController.login)
+router.get("/banners", BannerController.getBanner)
 
 router.use(authentication)
 router.get("/products/:id", ProductController.getProductById)
@@ -24,7 +25,6 @@ router.delete("/products/:id", authorization, ProductController.deleteProductByI
 router.get("/categories", CategoryController.getCategory)
 router.post("/categories", authorization, CategoryController.addCategory)
 
-router.get("/banners", BannerController.getBanner)
 router.post("/banners", authorization, BannerController.addBanner)
 router.get("/banners/:id", authorization, BannerController.getBannerById)
 router.put("/banners/:id", authorization, BannerController.putBannerById)
