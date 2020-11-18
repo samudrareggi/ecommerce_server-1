@@ -22,7 +22,7 @@ class UserController {
             email: data.email,
             role: data.role
           })
-          res.status(200).json({ access_token })
+          res.status(200).json({ access_token, role: data.role })
         }
       })
       .catch(err => {
