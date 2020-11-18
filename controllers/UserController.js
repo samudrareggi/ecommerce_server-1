@@ -29,11 +29,11 @@ class UserController {
       })
   }
   static register(req, res, next) {
-    const {email, password} = req.body
+    const {email, password, name} = req.body
 
     User.create({email, password})
       .then(data => {
-        res.status(201).json({id: data.id, email: data.email})
+        res.status(201).json({id: data.id, email: data.email, name: data.name})
       })
       .catch(err => {
         next(err)
