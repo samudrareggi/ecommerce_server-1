@@ -20,9 +20,8 @@ class UserController {
           const access_token = signToken({
             id: data.id,
             email: data.email,
-            role: data.role
           })
-          res.status(200).json({ access_token, role: data.role })
+          res.status(200).json({ access_token, role: data.role, name: data.name })
         }
       })
       .catch(err => {
