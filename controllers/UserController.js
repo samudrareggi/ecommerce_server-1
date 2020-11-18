@@ -16,8 +16,6 @@ class UserController {
           throw { name: "Wrong Email/Password", status: '401' }
         } else if (!comparePassword(password, data.password)) {
           throw { name: "Wrong Email/Password", status: '401' }
-        } else if (data.role !== "admin") {
-          throw { name: "Sorry admin only", status: '401' }
         } else {
           const access_token = signToken({
             id: data.id,
