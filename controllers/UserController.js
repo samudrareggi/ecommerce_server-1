@@ -31,7 +31,7 @@ class UserController {
   static register(req, res, next) {
     const {email, password, name} = req.body
 
-    User.create({email, password})
+    User.create({email, password, name})
       .then(data => {
         res.status(201).json({id: data.id, email: data.email, name: data.name})
       })
