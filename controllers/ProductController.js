@@ -15,7 +15,8 @@ class ProductController {
     Product.findAll({
       where: {
         id: +req.params.id
-      }
+      },
+      order: [["id", "ASC"]]
     })
     .then(data => {
       if (data.length === 0) {
@@ -37,7 +38,6 @@ class ProductController {
         res.status(201).json({ name, image_url, price, stock, CategoryId })
       })
       .catch(err => {
-        console.log(err)
         next(err)
       })
   }
@@ -61,7 +61,6 @@ class ProductController {
         if (data[0] === 0) {
           throw { name: "Product Not Found", status: 404 }
         } else {
-          console.log("aaaa")
           res.status(200).json(data[1][0])
         }
       })

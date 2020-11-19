@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Cart)
     }
   };
   User.init({
@@ -19,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
       validate: {
+        notNull: {
+          msg: "name cannot be empty"
+        },
         notEmpty: {msg: "Name cannot be empty"}
       }
     },
@@ -30,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         msg: "Email address already exists!"
       },
       validate: {
+        notNull: {
+          msg: "Email cannot be empty"
+        },
+        isEmail: {msg: "Input not allowed"},
         notEmpty: {msg: "Email cannot be empty"}
       }
     },
@@ -37,9 +45,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
       validate: {
+        notNull: {
+          msg: "Password cannot be empty"
+        },
         isValid(value) {
           if (value.length < 8) {
-            throw new Error('Password atleast 8 characters or more')
+            throw new Error('Password at least 8 characters or more')
           }
         }
       }
